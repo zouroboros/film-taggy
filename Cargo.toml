@@ -1,0 +1,18 @@
+[package]
+name = "film_taggy"
+license = "GPL-3,0-or-later"
+version = "0.1.0"
+authors = ["Zouroboros <zouroboros@zoho.eu>"]
+edition = "2018"
+
+[dependencies]
+
+[dependencies.gtk]
+version = "0.7"
+features = ["v3_16"]
+
+[dependencies.glib]
+version = "0.8"
+
+[dependencies.rexiv2]
+version = "0.7.0"
