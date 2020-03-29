@@ -1,13 +1,78 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.22.1 -->
+<!-- Generated with glade 3.22.2 -->
 <interface>
   <requires lib="gtk+" version="3.20"/>
+  <object class="GtkListStore" id="author_completion_list">
+    <columns>
+      <!-- column-name author -->
+      <column type="gchararray"/>
+    </columns>
+  </object>
+  <object class="GtkEntryCompletion" id="author_completion">
+    <property name="model">author_completion_list</property>
+    <property name="text_column">0</property>
+    <child>
+      <object class="GtkCellRendererText" id="author_completion_cell_renderer"/>
+      <attributes>
+        <attribute name="text">0</attribute>
+      </attributes>
+    </child>
+  </object>
+  <object class="GtkListStore" id="camera_completion_list">
+    <columns>
+      <!-- column-name camera -->
+      <column type="gchararray"/>
+    </columns>
+  </object>
+  <object class="GtkEntryCompletion" id="camera_completion">
+    <property name="model">camera_completion_list</property>
+    <property name="text_column">0</property>
+    <child>
+      <object class="GtkCellRendererText" id="camera_completion_cell_renderer"/>
+      <attributes>
+        <attribute name="text">0</attribute>
+      </attributes>
+    </child>
+  </object>
   <object class="GtkTextBuffer" id="comment_buffer"/>
   <object class="GtkListStore" id="files_list_store">
     <columns>
       <!-- column-name file_name -->
       <column type="gchararray"/>
     </columns>
+  </object>
+  <object class="GtkListStore" id="film_completion_list">
+    <columns>
+      <!-- column-name film -->
+      <column type="gchararray"/>
+    </columns>
+  </object>
+  <object class="GtkEntryCompletion" id="film_completion">
+    <property name="model">film_completion_list</property>
+    <property name="text_column">0</property>
+    <child>
+      <object class="GtkCellRendererText" id="film_completion_cell_renderer"/>
+      <attributes>
+        <attribute name="text">0</attribute>
+      </attributes>
+    </child>
+  </object>
+  <object class="GtkListStore" id="iso_completion_list">
+    <columns>
+      <!-- column-name iso -->
+      <column type="gchararray"/>
+    </columns>
+  </object>
+  <object class="GtkEntryCompletion" id="iso_completion">
+    <property name="model">iso_completion_list</property>
+    <property name="text_column">0</property>
+    <property name="inline_completion">True</property>
+    <child>
+      <object class="GtkCellRendererText" id="iso_completion_cell_renderer"/>
+      <attributes>
+        <attribute name="text">0</attribute>
+      </attributes>
+    </child>
   </object>
   <object class="GtkApplicationWindow" id="app_window">
     <property name="can_focus">False</property>
@@ -157,6 +222,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="placeholder_text" translatable="yes">Author</property>
+                <property name="completion">author_completion</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -168,6 +234,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="placeholder_text" translatable="yes">ISO</property>
+                <property name="completion">iso_completion</property>
                 <property name="input_purpose">number</property>
               </object>
               <packing>
@@ -180,6 +247,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="placeholder_text" translatable="yes">What film</property>
+                <property name="completion">film_completion</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>
@@ -192,6 +260,7 @@
                 <property name="can_focus">True</property>
                 <property name="width_chars">25</property>
                 <property name="placeholder_text" translatable="yes">Camera</property>
+                <property name="completion">camera_completion</property>
               </object>
               <packing>
                 <property name="left_attach">1</property>

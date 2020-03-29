@@ -27,6 +27,28 @@ impl AppWindow {
         let save_button: gtk::Button = builder.get_object("save_button").unwrap();
         let files_list_store: gtk::ListStore = builder.get_object("files_list_store").unwrap();
 
+        let camera_completion_list: gtk::ListStore = builder.get_object("camera_completion_list").unwrap();
+        let film_completion_list: gtk::ListStore = builder.get_object("film_completion_list").unwrap();
+        let iso_completion_list: gtk::ListStore = builder.get_object("iso_completion_list").unwrap();
+        let author_completion_list: gtk::ListStore = builder.get_object("author_completion_list").unwrap();
+
+        for camera in RefCell::borrow(&state).recent_cameras.iter() {
+            camera_completion_list.set(&camera_completion_list.append(), &[0], &[&camera.clone()]);
+        }
+
+        for film in RefCell::borrow(&state).recent_films.iter() {
+            film_completion_list.set(&film_completion_list.append(), &[0], &[&film.clone()]);
+        }
+
+        for iso in RefCell::borrow(&state).recent_isos.iter() {
+            iso_completion_list.set(&iso_completion_list.append(), &[0], &[&iso.clone()]);
+        }
+
+        for author in RefCell::borrow(&state).recent_authors.iter() {
+            author_completion_list.set(&author_completion_list.append(), &[0], &[&author.clone()]);
+        }
+
+
         let window_clone = window.clone();
         let state_clone = Rc::clone(&state);
         let files_list_store_clone = files_list_store.clone();

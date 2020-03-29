@@ -12,17 +12,9 @@ fn main() {
     // Start up the GTK3 subsystem.
     gtk::init().expect("Unable to start GTK3. Error");
 
-    let state = Rc::new(RefCell::new(app::AppState {
-        camera: None,
-        film: None,
-        iso: None,
-        author: None,
-        comment: None,
-        set_file_index: false,
-        files: Vec::new()
-    }));
-
     let app = app::App::new();
+
+    let state = Rc::new(RefCell::new(app.restore_state().expect("Unable to restore app state.")));
 
     let app_window = app_window::AppWindow::new(state, app);
     app_window.show();
