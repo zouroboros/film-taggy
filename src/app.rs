@@ -25,23 +25,6 @@ impl App {
         return App {};
     }
 
-    pub fn restore_state(&self) -> Option<AppState> {
-        let state = AppState {
-            camera: None,
-            film: None,
-            iso: None,
-            author: None,
-            comment: None,
-            set_file_index: false,
-            files: Vec::new(),
-            recent_cameras: vec!["Canon EOS 500".to_string(), "Canon EOS 300".to_string(), "Fujica ST 605".to_string()],
-            recent_films: vec!["Kodak Tri-X".to_string(), "Kodak T-Max 100".to_string(), "Kodak T-Max 400".to_string(), "Fuji Across II".to_string()],
-            recent_isos: vec!["100".to_string(), "200".to_string(), "400".to_string()],
-            recent_authors: vec!["Marks".to_string(), "Markx".to_string()]
-        };
-        return Some(state);
-    }
-
     pub fn save(&self, state: &AppState) -> Result<AppState> {
         for file in state.files.iter() {
             let mut metadata = rexiv2::Metadata::new_from_path(&file).unwrap();
