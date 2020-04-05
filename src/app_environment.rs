@@ -17,7 +17,7 @@ impl AppEnvironment {
 
         let dir = AppEnvironment::recent_dir();
 
-        if(!dir.exists()) {
+        if !dir.exists() {
             AppEnvironment::init_recents_dir()?;
         }
 
@@ -43,17 +43,17 @@ impl AppEnvironment {
         let dir = AppEnvironment::recent_dir();
 
         let recent_cameras = dir.join(path::Path::new("cameras"));
-        let mut recent_cameras_file = fs::File::create(recent_cameras)?;
+        let _recent_cameras_file = fs::File::create(recent_cameras)?;
 
         let recent_films = dir.join(path::Path::new("films"));
-        let mut recent_films_file = fs::File::create(recent_films)?;
+        let _recent_films_file = fs::File::create(recent_films)?;
 
         let recent_isos = dir.join(path::Path::new("isos"));
         let mut recent_isos_file = fs::File::create(recent_isos)?;
         recent_isos_file.write_all(include_str!("setup/isos").as_bytes())?;
 
         let recent_authors = dir.join(path::Path::new("authors"));
-        let mut recent_authors_file = fs::File::create(recent_authors)?;
+        let _recent_authors_file = fs::File::create(recent_authors)?;
 
         Ok(())
     }

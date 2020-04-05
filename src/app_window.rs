@@ -1,4 +1,3 @@
-use std::option::*;
 use std::rc::Rc;
 use std::cell::RefCell;
 use std::borrow::Borrow;
@@ -81,7 +80,6 @@ impl AppWindow {
             }
         });
 
-        let window_clone = window.clone();
         let state_clone = Rc::clone(&state);
 
         save_button.connect_clicked(move |_| {
