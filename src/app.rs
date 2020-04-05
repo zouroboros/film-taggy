@@ -1,7 +1,8 @@
+use std::io;
 use std::path::PathBuf;
 use std::option::Option;
 
-use rexiv2::*;
+use rexiv2;
 
 use crate::app_environment::*;
 
@@ -31,11 +32,11 @@ impl App {
         };
     }
 
-    pub fn initial_state(&self) -> Option<AppState> {
+    pub fn initial_state(&self) -> Result<AppState, io::Error> {
         self.environment.restore_state()
     }
 
-    pub fn save(&self, state: &mut AppState) -> Result<AppState> {
+    pub fn save(&self, state: &mut AppState) -> Result<AppState, io::Error> {
 
          if let Some(camera) = &state.camera {
              if(!state.recent_cameras.contains(camera)){
@@ -66,35 +67,24 @@ impl App {
 
             if let Some(camera) = &state.camera {
                 metadata.set_tag_string("Exif.Image.Model", &camera);
-
-                 if(!state.recent_cameras.contains(camera)){
-                    state.recent_cameras.push(camera.to_string());
-                 }
             }
 
             if let Some(film) = &state.film {
                 metadata.set_tag_string("Exif.Image.Make", &film);
-
-                if(!state.recent_films.contains(film)) {
-                    state.recent_films.push(film.to_string());
-                }
             }
 
             if let Some(iso) = &state.iso {
                 metadata.set_tag_string("Exif.Photo.ISOSpeedRatings", &iso);
-
-                if(!state.recent_isos.contains(iso)) {
-                    state.recent_isos.push(iso.to_string());
-                }
             }
 
             if let Some(comment) = &state.comment {
                 metadata.set_tag_string("Exif.Photo.UserComment", &comment);
             }
 
-            metadata.save_to_file(file).expect("Error writing exif data!");
-            self.environment.save_state(state);
+            metadata.save_to_file(file);
         }
+
+        self.environment.save_state(state)?;
 
         return Ok(state.clone());
     }
