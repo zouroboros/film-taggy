@@ -85,7 +85,7 @@ impl AppWindow {
         let state_clone = Rc::clone(&state);
 
         save_button.connect_clicked(move |_| {
-            let mut state = state_clone.borrow_mut();
+            let state = &mut state_clone.borrow_mut();
 
             state.camera = camera_entry.get_text().map(|s| { s.as_str().to_string() });
             state.film = film_entry.get_text().map(|s| { s.as_str().to_string() });
@@ -94,7 +94,7 @@ impl AppWindow {
             state.comment = comment_buffer.get_text(&comment_buffer.get_start_iter(),
                 &comment_buffer.get_end_iter(), false).map(|s| { s.as_str().to_string() });
 
-            let result = app.save(&state);
+            let result = app.save(state);
         });
 
         AppWindow {

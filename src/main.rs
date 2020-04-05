@@ -15,9 +15,9 @@ fn main() {
 
     let environment = app_environment::AppEnvironment::new();
 
-    let app = app::App::new();
+    let app = app::App::new(environment);
 
-    let state = Rc::new(RefCell::new(environment.restore_state().expect("Unable to restore app state.")));
+    let state = Rc::new(RefCell::new(app.initial_state().expect("Unable to restore app state.")));
 
     let app_window = app_window::AppWindow::new(state, app);
     app_window.show();

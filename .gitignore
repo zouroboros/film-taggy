@@ -1,4 +1,5 @@
 /target
 **/*.rs.bk
 **~
-.film_taggy/**
+film_taggy/**
+test files/**

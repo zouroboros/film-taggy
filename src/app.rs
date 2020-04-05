@@ -3,6 +3,8 @@ use std::option::Option;
 
 use rexiv2::*;
 
+use crate::app_environment::*;
+
 #[derive(Clone)]
 pub struct AppState {
     pub camera: Option<String>,
@@ -18,27 +20,72 @@ pub struct AppState {
     pub recent_authors: Vec<String>
 }
 
-pub struct App {}
+pub struct App {
+    environment: AppEnvironment
+}
 
 impl App {
-    pub fn new() -> App {
-        return App {};
+    pub fn new(environment: AppEnvironment) -> App {
+        return App {
+            environment
+        };
     }
 
-    pub fn save(&self, state: &AppState) -> Result<AppState> {
+    pub fn initial_state(&self) -> Option<AppState> {
+        self.environment.restore_state()
+    }
+
+    pub fn save(&self, state: &mut AppState) -> Result<AppState> {
+
+         if let Some(camera) = &state.camera {
+             if(!state.recent_cameras.contains(camera)){
+                state.recent_cameras.push(camera.to_string());
+             }
+        }
+
+        if let Some(film) = &state.film {
+            if(!state.recent_films.contains(film)) {
+                state.recent_films.push(film.to_string());
+            }
+        }
+
+        if let Some(iso) = &state.iso {
+            if(!state.recent_isos.contains(iso)) {
+                state.recent_isos.push(iso.to_string());
+            }
+        }
+
+        if let Some(author) = &state.author {
+            if(!state.recent_authors.contains(author)) {
+                state.recent_authors.push(author.to_string());
+            }
+        }
+
         for file in state.files.iter() {
             let mut metadata = rexiv2::Metadata::new_from_path(&file).unwrap();
 
             if let Some(camera) = &state.camera {
                 metadata.set_tag_string("Exif.Image.Model", &camera);
+
+                 if(!state.recent_cameras.contains(camera)){
+                    state.recent_cameras.push(camera.to_string());
+                 }
             }
 
             if let Some(film) = &state.film {
                 metadata.set_tag_string("Exif.Image.Make", &film);
+
+                if(!state.recent_films.contains(film)) {
+                    state.recent_films.push(film.to_string());
+                }
             }
 
             if let Some(iso) = &state.iso {
                 metadata.set_tag_string("Exif.Photo.ISOSpeedRatings", &iso);
+
+                if(!state.recent_isos.contains(iso)) {
+                    state.recent_isos.push(iso.to_string());
+                }
             }
 
             if let Some(comment) = &state.comment {
@@ -46,6 +93,7 @@ impl App {
             }
 
             metadata.save_to_file(file).expect("Error writing exif data!");
+            self.environment.save_state(state);
         }
 
         return Ok(state.clone());
