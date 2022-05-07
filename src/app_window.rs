@@ -13,38 +13,38 @@ pub struct AppWindow {
 impl AppWindow {
     pub fn new(state: Rc<RefCell<AppState>>, app: App) -> AppWindow {
         let glade_str = include_str!("app_window.glade");
-        let builder = gtk::Builder::new_from_string(glade_str);
+        let builder = gtk::Builder::from_string(glade_str);
 
-        let window: gtk::Window = builder.get_object("app_window").unwrap();
-        let camera_entry: gtk::Entry = builder.get_object("camera_entry").unwrap();
-        let film_entry: gtk::Entry = builder.get_object("film_entry").unwrap();
-        let iso_entry: gtk::Entry = builder.get_object("iso_entry").unwrap();
-        let author_entry: gtk::Entry = builder.get_object("author_entry").unwrap();
-        let comment_buffer: gtk::TextBuffer = builder.get_object("comment_buffer").unwrap();
-        let file_index_checkbox: gtk::CheckButton = builder.get_object("file_index_checkbox").unwrap();
-        let open_button: gtk::Button = builder.get_object("open_button").unwrap();
-        let save_button: gtk::Button = builder.get_object("save_button").unwrap();
-        let files_list_store: gtk::ListStore = builder.get_object("files_list_store").unwrap();
+        let window: gtk::Window = builder.object("app_window").unwrap();
+        let camera_entry: gtk::Entry = builder.object("camera_entry").unwrap();
+        let film_entry: gtk::Entry = builder.object("film_entry").unwrap();
+        let iso_entry: gtk::Entry = builder.object("iso_entry").unwrap();
+        let author_entry: gtk::Entry = builder.object("author_entry").unwrap();
+        let comment_buffer: gtk::TextBuffer = builder.object("comment_buffer").unwrap();
+        let file_index_checkbox: gtk::CheckButton = builder.object("file_index_checkbox").unwrap();
+        let open_button: gtk::Button = builder.object("open_button").unwrap();
+        let save_button: gtk::Button = builder.object("save_button").unwrap();
+        let files_list_store: gtk::ListStore = builder.object("files_list_store").unwrap();
 
-        let camera_completion_list: gtk::ListStore = builder.get_object("camera_completion_list").unwrap();
-        let film_completion_list: gtk::ListStore = builder.get_object("film_completion_list").unwrap();
-        let iso_completion_list: gtk::ListStore = builder.get_object("iso_completion_list").unwrap();
-        let author_completion_list: gtk::ListStore = builder.get_object("author_completion_list").unwrap();
+        let camera_completion_list: gtk::ListStore = builder.object("camera_completion_list").unwrap();
+        let film_completion_list: gtk::ListStore = builder.object("film_completion_list").unwrap();
+        let iso_completion_list: gtk::ListStore = builder.object("iso_completion_list").unwrap();
+        let author_completion_list: gtk::ListStore = builder.object("author_completion_list").unwrap();
 
         for camera in RefCell::borrow(&state).recent_cameras.iter() {
-            camera_completion_list.set(&camera_completion_list.append(), &[0], &[&camera.clone()]);
+            camera_completion_list.set(&camera_completion_list.append(), &[(0, &camera)]);
         }
 
         for film in RefCell::borrow(&state).recent_films.iter() {
-            film_completion_list.set(&film_completion_list.append(), &[0], &[&film.clone()]);
+            film_completion_list.set(&film_completion_list.append(), &[(0, &film)]);
         }
 
         for iso in RefCell::borrow(&state).recent_isos.iter() {
-            iso_completion_list.set(&iso_completion_list.append(), &[0], &[&iso.clone()]);
+            iso_completion_list.set(&iso_completion_list.append(), &[(0, &iso)]);
         }
 
         for author in RefCell::borrow(&state).recent_authors.iter() {
-            author_completion_list.set(&author_completion_list.append(), &[0], &[&author.clone()]);
+            author_completion_list.set(&author_completion_list.append(), &[(0, &author)]);
         }
 
 
@@ -60,23 +60,30 @@ impl AppWindow {
 
             let filter = gtk::FileFilter::new();
             filter.add_pattern("*.jpg");
+            filter.add_pattern("*.JPG");
+            filter.add_pattern("*.jpeg");
+            filter.add_pattern("*.JPEG");
 
             dialog.set_filter(&filter);
             dialog.set_select_multiple(true);
 
             if dialog.run() == gtk::ResponseType::Accept {
                 files_list_store_clone.clear();
-                let files = dialog.get_filenames();
+                let files = dialog.filenames();
 
                 for pathbuf in files.iter() {
                     state_clone.borrow_mut().files.push(pathbuf.clone().to_path_buf());
-                    files_list_store_clone.set(&files_list_store_clone.append(), &[0],
-                        &[&pathbuf.clone().file_name().unwrap().to_str().unwrap()]);
+                    files_list_store_clone.set(&files_list_store_clone.append(), &[(0,
+                        &pathbuf.clone().file_name().unwrap().to_str())]);
+                }
+                unsafe {
+                    dialog.destroy();
                 }
 
-                dialog.destroy();
             } else {
-                dialog.destroy();
+                unsafe {
+                    dialog.destroy();
+                }
             }
         });
 
@@ -85,12 +92,12 @@ impl AppWindow {
         save_button.connect_clicked(move |_| {
             let state = &mut state_clone.borrow_mut();
 
-            state.camera = camera_entry.get_text().map(|s| { s.as_str().to_string() });
-            state.film = film_entry.get_text().map(|s| { s.as_str().to_string() });
-            state.iso = iso_entry.get_text().map(|s| { s.as_str().to_string() });
-            state.author = author_entry.get_text().map(|s| { s.as_str().to_string() });
-            state.comment = comment_buffer.get_text(&comment_buffer.get_start_iter(),
-                &comment_buffer.get_end_iter(), false).map(|s| { s.as_str().to_string() });
+            state.camera = Some(camera_entry.text().as_str().to_string());
+            state.film = Some(film_entry.text().as_str().to_string());
+            state.iso = Some(iso_entry.text().as_str().to_string());
+            state.author = Some(author_entry.text().as_str().to_string());
+            state.comment = comment_buffer.text(&comment_buffer.start_iter(),
+                &comment_buffer.end_iter(), false).map(|s| { s.as_str().to_string() });
 
             let result = app.save(state);
         });

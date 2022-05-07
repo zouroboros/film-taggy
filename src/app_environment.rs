@@ -4,7 +4,7 @@ use std::io::BufRead;
 use std::fs;
 use std::path;
 
-use glib::get_user_config_dir;
+use glib::user_config_dir;
 
 use crate::app::*;
 
@@ -30,7 +30,7 @@ impl AppEnvironment {
         let mut recent_dir = path::PathBuf::new();
 
         #[cfg(not(debug_assertions))]
-        recent_dir.push(get_user_config_dir().expect("No user config dir found!"));
+        recent_dir.push(user_config_dir());
 
         recent_dir.push("film_taggy");
 

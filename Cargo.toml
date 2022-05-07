@@ -3,16 +3,15 @@ name = "film_taggy"
 license = "GPL-3,0-or-later"
 version = "0.1.0"
 authors = ["Zouroboros <zouroboros@zoho.eu>"]
-edition = "2018"
+edition = "2021"
 
 [dependencies]
 
 [dependencies.gtk]
-version = "0.7"
-features = ["v3_16"]
+version = "0.15.5"
 
 [dependencies.glib]
-version = "0.8"
+version = "0.15.11"
 
 [dependencies.rexiv2]
-version = "0.7.0"
+version = "0.9.1"
